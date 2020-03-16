@@ -1,0 +1,67 @@
+<html>
+<head>
+<script src="{{STATIC_URL}}jquery.min.js"></script>
+<script src="{{STATIC_URL}}dataTables.min.js"></script>
+<script>
+$(document).ready(function(){
+dt = $('#nseDdataTables').DataTable()
+//dt.row.add(resData).draw();
+});
+
+function submitForm(){
+	$.ajax({
+            type: 'POST',
+            url: "{% url 'getdata' %}",
+            data: {'symbol':$("#symbols :selected").val(),'csrfmiddlewaretoken': '{{ csrf_token }}',},
+            dataType: 'json',
+			success:function(response)
+			{
+				$('#tableDiv').show();
+				$('#nseDdataTables').DataTable().clear().draw();
+				for(i=0;i<response.length;i++){
+					dt.row.add(response[i]).draw();
+				}
+			}
+        });
+}
+</script>
+
+</head>
+<body>
+<form id="nse_form" name="nse_form" action="{% url 'getdata' %}" method="post">
+	{% csrf_token %}
+<label for="symbols">Choose a Symbol:</label>
+
+<select id="symbols" name="symbols">
+{% for i in data%}
+<option value="{{i}}">{{i}}</option>
+{% endfor %}
+</select>	
+<button type="button" onclick='submitForm();'>Submit</button>
+</form>
+
+
+<div id="tableDiv" hidden>
+<table style='border-spacing: 0;cell-spacing:0;' class="table table-striped table-bordered table-hover" id="nseDdataTables" border="1" >
+  <thead>
+    <tr>
+      <th>SYMBOL</th>
+	  <th>SERIES</th>
+      <th>OPEN</th>
+      <th>HIGH</th>
+	  <th>LOW</th>
+	  <th>CLOSE</th>
+	  <th>LAST</th>
+	  <th>PREVCLOSE</th>
+	  <th>TOTTRDQTY</th>
+	  <th>TIMESTAMP</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+</div>
+
+
+</body>
+</html>
