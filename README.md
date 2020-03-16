@@ -1,5 +1,5 @@
 # NSE
-Project to download NSE data for last 29 days
+Project to download NSE data for last 30 days
 
 
 Note:
